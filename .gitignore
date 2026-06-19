@@ -1,0 +1,21 @@
+# Compiled output
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# Sensitive config — NEVER commit
+application-dev.yml
+**/application-dev.yml
