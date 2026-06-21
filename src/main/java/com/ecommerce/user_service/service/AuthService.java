@@ -72,7 +72,8 @@ public class AuthService {
 				request.getPassword()
 				)
 			);
-		User user =  (User) authentication.getPrincipal();       
+		User user =  (User) authentication.getPrincipal();     
+		
 		//Remember — UserDetailsService returns your User object (since User implements UserDetails). 
 		// The Authentication object stores that as its principal.
 		//This saves a redundant database round trip — small but matters at scale.
