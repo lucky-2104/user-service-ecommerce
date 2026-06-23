@@ -186,12 +186,8 @@ public class AuthControllerTest {
 						.password(invalidPassword)
 						.build();
 		
-		AuthResponse response = AuthResponse.builder()
-						.accessToken("fake-access-token")
-						.refreshToken("fake-refresh-token")
-						.build();
 		
-		when(authService.login(any(LoginRequest.class))).thenThrow(new BadCredentialsException("Invalid username or password") );
+		when(authService.login(any(LoginRequest.class))).thenThrow(new BadCredentialsException("") );
 		
 		
 		
@@ -201,9 +197,9 @@ public class AuthControllerTest {
 				.content(objectMapper.writeValueAsString(request))
 				
 				)
-		.andExpect(status().isBadRequest()) 
-		.andExpect(jsonPath("$.message").value("Invalid username or password"))
-		.andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+		.andExpect(status().isUnauthorized()) 
+		.andExpect(jsonPath("$.message").value("INVALID EMAIL OR PASSWORD"))
+		.andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
 		.andExpect(jsonPath("$.timestamp").exists())
 		;	
 	}

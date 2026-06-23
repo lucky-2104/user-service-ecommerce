@@ -2,6 +2,8 @@ package com.ecommerce.user_service.exception;
 
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,36 +34,34 @@ public class GlobalExceptionHandler {
 		
 	}
 	
+	
+	
 	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<?> handlesValidationErrors(BadCredentialsException ex){
+	public ResponseEntity<?> handlesBadCredentialsException(BadCredentialsException ex){
 		
 		
 		ErrorResponse error = new ErrorResponse(
 				
-				ex.getMessage(),
-				HttpStatus.BAD_REQUEST.value(),
+				"INVALID EMAIL OR PASSWORD",
+				HttpStatus.UNAUTHORIZED.value(),
 				LocalDateTime.now()
 				
 				);
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 	}
 	
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<?> handlesValidationErrors(MethodArgumentNotValidException ex){
-		
-		
-		ErrorResponse error = new ErrorResponse(
-				
-				ex.getMessage(),
-				HttpStatus.BAD_REQUEST.value(),
-				LocalDateTime.now()
-				
-				);
-		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	public ResponseEntity<Map<String, String>> handleValidationErrors(
+	        MethodArgumentNotValidException ex) {
+	    Map<String, String> errors = new HashMap<>();
+	    ex.getBindingResult().getFieldErrors().forEach(fieldError ->
+	            errors.put(fieldError.getField(), fieldError.getDefaultMessage())
+	    );
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
 	}
+	
 	
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<?> handlesAccessDeniedException(AccessDeniedException ex){

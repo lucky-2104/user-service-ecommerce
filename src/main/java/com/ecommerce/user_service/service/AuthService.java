@@ -82,9 +82,6 @@ public class AuthService {
 		String refreshToken = jwtService.generateRefreshToken(user);
 		
 		
-		
-		
-		
 		return AuthResponse.builder()
 				.accessToken(accessToken)
 				.refreshToken(refreshToken)
