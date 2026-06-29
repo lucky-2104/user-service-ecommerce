@@ -40,7 +40,9 @@ public class JwtService {
     public String generateAccessToken(UserDetails userDetails) {
     	
     	return Jwts.builder()
-    			.subject(userDetails.getUsername())    // used email as the subject of the token generation
+    			.subject(userDetails.getUsername())
+    			// used email as the subject of the token generation
+    			.claim("role",userDetails.getAuthorities().stream().findFirst().get().getAuthority())
     			.issuedAt(new Date())
     			.expiration(new Date(System.currentTimeMillis() + accessTokenExpiry))
     			.signWith(getSigningKey())
@@ -65,6 +67,8 @@ public class JwtService {
     	return claimResolver.apply(claims);
     }
     
+    
+    
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
@@ -72,16 +76,22 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-    
+    public String extractRole(String token) {
+    	return extractClaim(token,claims -> claims.get("role",String.class));
+    }
+        
     public String extractEmail(String token) {
 		return  extractClaim(token,Claims::getSubject);
 		}
 
     // Validate token — check email matches AND token not expired
+    
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String email = extractEmail(token);
         return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
+    
+
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
